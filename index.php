@@ -1,1 +1,1 @@
-echo "My awesome web app"
+My awesome web app
