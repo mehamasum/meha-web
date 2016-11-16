@@ -34,12 +34,17 @@
                 trigger: 'left',
                 callback: function(key, options) {
                     var txt = document.getElementById("move_option_text");
+                    var code = document.getElementById("post_code");
+
+
                     console.log(txt);
                     if (key=="0") {
                         txt.textContent= "forward";
+                        code.value = "mf";
                     }
                     else if (key=="1") {
                         txt.textContent= "backword";
+                        code.value = "mb";
                     }
                     console.log(txt.textContent);
                 },
@@ -91,11 +96,6 @@
             </g>
                         
 
-        </g>
-
-        <g id="forward_shape" class="draggable" transform="translate(10,10)">
-            <path fill="#5b67a5" d="m 0,0 H 70 v 25 H 0 V 20 c 0,-10 -8,8 -8,-7.5 s 8,2.5 8,-7.5 z"></path>
-            <text x="10" y="16" fill="#fff"> forward </text>
         </g>
 
     </svg>
@@ -167,8 +167,8 @@
         var move_shape = document.getElementById("move_shape");
         new Draggable(move_shape);
 
-        var forward_shape = document.getElementById("forward_shape");
-        new Draggable(forward_shape);
+        //var forward_shape = document.getElementById("forward_shape");
+        //new Draggable(forward_shape);
 
 
     };
@@ -177,7 +177,7 @@
     </script>
 
     <form action="/" method="POST">
-      <input type="text" name="code" value="">
+      <input id="post_code" type="text" name="code" value="mf">
       <input type="submit" value="Submit">
     </form>
 
