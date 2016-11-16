@@ -27,6 +27,8 @@
 
 
 <body>
+
+	<!--move-->
     <script>
         $(function(){
             $.contextMenu({
@@ -35,16 +37,14 @@
                 callback: function(key, options) {
                     var txt = document.getElementById("move_option_text");
                     var code = document.getElementById("post_code");
-
-
                     console.log(txt);
                     if (key=="0") {
                         txt.textContent= "forward";
-                        code.value = "mf";
+                        code.value = code.value.replace("mb","mf");
                     }
                     else if (key=="1") {
                         txt.textContent= "backword";
-                        code.value = "mb";
+                        code.value = code.value.replace("mf","mb");
                     }
                     console.log(txt.textContent);
                 },
@@ -56,6 +56,33 @@
         });
     </script>
 
+	<!--turn-->
+    <script>
+		$(function(){
+			$.contextMenu({
+			selector: '.turnVal',
+			trigger: 'left',
+			callback: function(key,options){
+				var trn = document.getElementById("turnT");
+                var code = document.getElementById("post_code");
+
+	            console.log(trn);
+				if(key=="0"){
+					trn.textContent="left";
+                    code.value = code.value.replace("tr","tl");
+				}
+				else if(key=='1')
+					trn.textContent="right";
+                    code.value = code.value.replace("tl","tr");
+                },
+				items:{
+					"0":{name: "left"},
+					"1":{name: "right"}
+				}
+			});
+		});
+	</script>
+
 
     <svg id="svg" width="600" height="400">
 
@@ -66,13 +93,13 @@
             <path id="move_base" fill="#5ba58c" 
                     d="
                     m 0,8 
-                    A 8,8 0 0,1 8,0 
+                    A 8,8 0 0,1 8,0
                     H 15 
-                    l 6,4 3,0 6,-4 
+                    l 6,4 3,0 6,-4
                     H 150 
                     v 30
-                    H 29.5 
-                    l -6,4 -3,0 -6,-4 
+                    H 29.5
+                    l -6,4 -3,0 -6,-4
                     H 8 a 8,8 0 0,1 -8,-8 
                     z
                     ">
@@ -94,11 +121,47 @@
             </g>
 
             </g>
-                        
-
         </g>
 
+        <g id="turn_shape" class="draggable" transform="translate(250,200)">
+			<g id="turn">
+			
+			<path d="
+			    m0,0
+				h15
+				a5.5,5.5 0 1,0 8,0
+				h120
+				v30
+				h-120
+				a5.5,5.5 0 1,1 -8,0
+				h-15
+				v-30
+				"
+				style="
+				fill:#5ba58c;"
+				/>
+				<text x="15" y="23" fill=white >turn</text>
+			</g>
+			<g class="turnVal">
+				<rect x="50" y="10" rx="4" ry="4" fill=white height="15" width="55"></rect>
+				<text x="55" y="20" fill=black class="turnText">
+					<tspan id="turnT">
+		                    left
+		            </tspan>
+		            <tspan>
+		                ▾                    
+					</tspan>
+				</text>
+				
+			</g>
+		</g>
+
     </svg>
+
+
+
+
+
 
 
     <script>
@@ -167,8 +230,8 @@
         var move_shape = document.getElementById("move_shape");
         new Draggable(move_shape);
 
-        //var forward_shape = document.getElementById("forward_shape");
-        //new Draggable(forward_shape);
+        var turn_shape = document.getElementById("turn_shape");
+        new Draggable(turn_shape);
 
 
     };
@@ -177,7 +240,7 @@
     </script>
 
     <form action="/" method="POST">
-      <input id="post_code" type="text" name="code" value="mf">
+      <input id="post_code" type="text" name="code" value="mf tl">
       <input type="submit" value="Submit">
     </form>
 
