@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>mehamasum.com</title>
+    <script src="lib/jquery.min.js"></script>
+    <link rel="stylesheet" href="lib/screen.css" type="text/css"/>
+    <link rel="stylesheet" href="lib/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="lib/theme-fixes.css" type="text/css"/>
+    <link href="lib/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
+    <script src="lib/jquery.contextMenu.js" type="text/javascript"></script>
+    <script src="lib/jquery.ui.position.min.js" type="text/javascript"></script>
+    <script src="lib/main.js" type="text/javascript"></script>
+
+    <style>
+    html,body {  
+        font-family: "consolas", Times, serif; font-size: 12px;
+        background:#fff; height:100%; margin:0; padding:0; overflow:hidden; 
+    }
+    canvas { position:absolute; top:0; left:0 }
+    img { position:absolute; }
+    .draggable:hover { cursor: move; }
+    </style>
+
+    <script type="text/javascript">
+        var code_to_be_sent = [];
+        var count = 0;
+    </script>
+
+</head>
+
+
+<body>
+
+
+
+    <script type="text/javascript">
+
+    function createTurnBlock(contextID, textID){
+        // this might be a better approach : http://stackoverflow.com/a/16489845
+        $("svg").append("<g class='draggable turnBlock' transform='translate(350,200)'><g id='turn'><path d='m0,10 a 10,10, 0 0,1 5,-10 h12 a5.5,5.5 0 1,0 8,0 h110 v30 h-110 a5.5,5.5 0 1,1 -8,0 h-12 a 10,10, 0 0,1 -5,-10 v-15' style='fill:#5ba58c;'/> <text x='33' y='20' fill=white >turn</text></g><g id='"+ contextID +"' class='turnOptions'><rect x='70' y='8' rx='4' ry='4' fill=white height='15' width='55'></rect><text x='75' y='20' fill=black class='turnText'><tspan id='"+ textID +"'>left </tspan><tspan>▾</tspan></text></g></g>");
+        $("#svgContainer").html($("#svgContainer").html());
+     }
+
+     $(document).ready(function(){
+
+        createTurnBlock("-1", "turnText-1");
+          
+
+        //for(var i=0; i<2; i++) {
+          //  createTurnBlock(i.toString(), "turnText"+i.toString());
+            //code_to_be_sent.push("tl");    
+        //}
+     });
+    </script>
+
+    <div id="svgContainer">
+    <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" width="600" height="400">
+        <rect x="5" y="5" width="290" height="390" stroke="#ff0099" stroke-width="5" fill="none" ></rect>
+    </svg>
+    </div>
+
+
+    <!--turn-->
+    <script>
+        $(function(){
+            $.contextMenu(
+            {
+                selector: '.turnOptions',
+                trigger: 'left',
+                items: {
+                    foo: {name: "left ", callback: function(key, opt){ 
+                        var index = parseInt(this[0].id);
+                        console.log(index);
+
+                        if(index!=-1) {
+                            code_to_be_sent[index] = "tl";
+                            console.log(code_to_be_sent);
+                        }
+
+                        var trn = document.getElementById("turnText"+index.toString());
+                        trn.textContent="left";
+                    }
+                },
+                    bar: {name: "right", callback: function(key, opt){ 
+                        var index = parseInt(this[0].id);
+                        console.log(index);
+
+                        if(index!=-1) {
+                            code_to_be_sent[index] = "tr";
+                            console.log(code_to_be_sent);
+                        }
+
+                        var trn = document.getElementById("turnText"+index.toString());
+                        trn.textContent="right";
+                    }
+                }
+            }
+
+            });
+        });
+    </script>
+
+
+
+
+    <!--dragger is better with TouchPunch: http://stackoverflow.com/a/20927868-->
+
+    <script>
+    var f = function(){
+
+        function Draggable(element){
+            this.element = element;
+            var self = this;
+
+            var originalLeft, originalTop;
+
+            var move = function(event){
+                self.element.style.stroke = "#ffee00";
+                if(self.dragStart != undefined){ self.dragStart();}
+                //console.log(event);
+
+                //don't bubble this event - mousedown
+                event.stopPropagation();
+                //prevent any default action
+                event.preventDefault();
+
+                var original = self.element.getAttribute("transform");
+                original = original.slice(10, -1).split(',');
+                //console.log(original);
+
+                originalLeft=parseInt(original[0]);
+                originalTop=parseInt(original[1]);
+                //console.log("> "+originalLeft);
+                //console.log("> "+originalTop);
+
+                var mouseDownX = event.clientX;
+                var mouseDownY = event.clientY;
+                //console.log(">> "+mouseDownX);
+                //console.log(">> "+mouseDownY)
+
+                function dragMe(event){
+                    var translated = "translate("+ (originalLeft + event.clientX - mouseDownX) + "," + (originalTop + event.clientY - mouseDownY) + ")";
+                    //console.log(translated);
+                    self.element.setAttribute("transform", translated);
+                    event.stopPropagation();
+                }
+
+                function dropMe(event){
+
+                    document.removeEventListener('mousemove',dragMe,true);
+                    document.removeEventListener('mouseup',dropMe,true);
+                    if(self.dragDrop !== undefined){ self.dragDrop();}
+                    event.stopPropagation();
+
+                    self.element.style.stroke = "none";
+
+                    var final = self.element.getAttribute("transform");
+                    final = final.slice(10, -1).split(',');
+                    //console.log(final);
+                    var finalLeft=parseInt(final[0]), finalTop=parseInt(final[1]);
+                    //console.log("final=" + finalLeft+", "+ finalTop);
+
+
+                    //if in red box
+                    //add me to code_to_be_send
+                    //gen a new me
+                    //console.log("originalLeft="+ originalLeft);
+
+                    if(originalLeft>295 && finalLeft>5 && finalLeft<295 && finalTop>5 && finalTop<390) {
+
+                        //console.log("condition met!");
+
+                        var classReceived = self.element.getAttribute("class");
+                        if(classReceived.includes("turnBlock")) {
+                            count++;
+                            createTurnBlock(count.toString(), "turnText"+count.toString());
+                            code_to_be_sent.push("tl"); 
+                            console.log(code_to_be_sent);
+                        }
+
+                        var classname = document.getElementsByClassName("draggable");
+
+                        for (var i = 0; i < classname.length; i++) {
+                            new Draggable(classname[i]); //this becomes element
+                        }
+
+                    }
+
+
+                }
+
+                document.addEventListener('mouseup',dropMe,true);
+                document.addEventListener('mousemove',dragMe,true);
+
+            };
+
+            this.element.addEventListener('mousedown',move,false);
+        }
+
+
+        //var move_shape = document.getElementById("move_shape");
+        //new Draggable(move_shape);
+
+        //var turn_shape = document.getElementById("turn_shape");
+        //new Draggable(turn_shape);
+
+        var classname = document.getElementsByClassName("draggable");
+
+        for (var i = 0; i < classname.length; i++) {
+            new Draggable(classname[i]); //this becomes element
+        }
+
+
+    };
+
+    window.addEventListener('load', f ,false);
+    </script>
+
+    <form action="/" method="POST">
+      <input id="post_code" type="text" name="code" value="mf tl">
+      <input type="submit" value="Submit">
+    </form>
+
+
+
+</body>
+</html>
