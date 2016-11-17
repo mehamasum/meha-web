@@ -316,10 +316,26 @@
     window.addEventListener('load', f ,false);
     </script>
 
-    <form action="/" method="POST">
-      <input id="post_code" type="text" name="code" value="mf tl">
-      <input type="submit" value="Submit">
-    </form>
+    <div style="margin-left: 10px">
+        <button style="margin-bottom: 10px; margin-top: 10px;" onclick="compiler()">Compile</button>
+
+        <form action="/" method="POST">
+            <input id="post_code" type="text" name="code" value="">
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+    <script>
+        function compiler() {
+            var code="";
+            for(var i=0; i<code_to_be_sent.length; i++) {
+                code+= code_to_be_sent[i] + " ";
+            }
+            console.log(code);
+
+            document.getElementById("post_code").setAttribute("value", code.trim());
+        }
+    </script>
 
 
 
