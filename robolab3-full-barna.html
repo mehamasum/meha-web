@@ -25,7 +25,7 @@
 
     <script type="text/javascript">
         var code_to_be_sent = [];
-        var element_to_code = {};
+        var code_element_map = [];
         var elementIndex = 0;
         var codeIndex = 0;
     </script>
@@ -37,24 +37,24 @@
 
 	<script type="text/javascript">
 
-    function createMoveBlock(contextID, textID){
+    function createMoveBlock(classID, contextID, textID){
         // this might be a better approach : http://stackoverflow.com/a/16489845
-        $("svg").append("<g class='draggable moveBlock' transform='translate(350,50)'><g id='move'><path d='m0,10 a 10,10, 0 0,1 5,-10 h12 a5.5,5.5 0 1,0 8,0 h110 v30 h-110 a5.5,5.5 0 1,1 -8,0 h-12 a 10,10, 0 0,1 -5,-10 v-15' style='fill:#5ba58c;'/> <text x='33' y='20' fill=white >move</text></g><g id='"+ contextID +"' class='moveOptions'><rect x='70' y='8' rx='4' ry='4' fill=white height='15' width='60'></rect><text x='71' y='20' fill=black class='moveText'><tspan id='"+ textID +"'>forward </tspan><tspan>▾</tspan></text></g></g>");
+        $("svg").append("<g class='draggable moveBlock' id='"+ classID +"' transform='translate(350,50)'><g id='move'><path d='m0,10 a 10,10, 0 0,1 5,-10 h12 a5.5,5.5 0 1,0 8,0 h110 v30 h-110 a5.5,5.5 0 1,1 -8,0 h-12 a 10,10, 0 0,1 -5,-10 v-15' style='fill:#5ba58c; stroke: #038a30; stroke-width: 1.5;' /> <text x='33' y='20' fill=white >move</text></g><g id='"+ contextID +"' class='moveOptions'><rect x='70' y='8' rx='4' ry='4' fill=white height='15' width='60'></rect><text x='71' y='20' fill=black class='moveText'><tspan id='"+ textID +"'>forward </tspan><tspan>▾</tspan></text></g></g>");
         $("#svgContainer").html($("#svgContainer").html());
      }
 
-    function createTurnBlock(contextID, textID){
+    function createTurnBlock(classID, contextID, textID){
         // this might be a better approach : http://stackoverflow.com/a/16489845
-        $("svg").append("<g class='draggable turnBlock' transform='translate(350,200)'><g id='turn'><path d='m0,10 a 10,10, 0 0,1 5,-10 h12 a5.5,5.5 0 1,0 8,0 h110 v30 h-110 a5.5,5.5 0 1,1 -8,0 h-12 a 10,10, 0 0,1 -5,-10 v-15' style='fill:#5ba58c;'/> <text x='33' y='20' fill=white >turn</text></g><g id='"+ contextID +"' class='turnOptions'><rect x='70' y='8' rx='4' ry='4' fill=white height='15' width='60'></rect><text x='75' y='20' fill=black class='turnText'><tspan id='"+ textID +"'>left </tspan><tspan>▾</tspan></text></g></g>");
+        $("svg").append("<g class='draggable turnBlock' id='"+ classID +"' transform='translate(350,200)'><g id='turn'><path d='m0,10 a 10,10, 0 0,1 5,-10 h12 a5.5,5.5 0 1,0 8,0 h110 v30 h-110 a5.5,5.5 0 1,1 -8,0 h-12 a 10,10, 0 0,1 -5,-10 v-15' style='fill:#5ba58c; stroke: #038a30; stroke-width: 1.5;'/> <text x='33' y='20' fill=white >turn</text></g><g id='"+ contextID +"' class='turnOptions'><rect x='70' y='8' rx='4' ry='4' fill=white height='15' width='60'></rect><text x='75' y='20' fill=black class='turnText'><tspan id='"+ textID +"'>left </tspan><tspan>▾</tspan></text></g></g>");
         $("#svgContainer").html($("#svgContainer").html());
      }
 
      $(document).ready(function(){
 
-        createMoveBlock("0", "moveText0");
+        createMoveBlock("block0", "0", "moveText0");
         //++ = 1
 
-        createTurnBlock("1", "turnText1");
+        createTurnBlock("block1", "1", "turnText1");
         //++ =2
 
         elementIndex = 2;
@@ -84,22 +84,39 @@
                     foo: {name: "forward", callback: function(key, opt){ 
                         var index = parseInt(this[0].id);
                         console.log(index);
-                        code_to_be_sent[index] = "mf";
-                        console.log(code_to_be_sent);
-                        
 
-                        var txt = document.getElementById("moveText"+index.toString());
-                        txt.textContent="forward";
+                        for(var i=0; i<code_element_map.length; i++) {
+                            if(code_element_map[i]==index) {
+                                console.log(index);
+                                console.log(i);
+                                console.log(code_to_be_sent[i]);
+                                code_to_be_sent[i] = "mf";
+                                console.log(code_to_be_sent);
+
+
+                                var trn = document.getElementById("moveText"+index.toString());
+                                trn.textContent="forward";
+                            }
+                        }
+
                     }
                 },
                     bar: {name: "backward", callback: function(key, opt){ 
                         var index = parseInt(this[0].id);
                         console.log(index);
-                        code_to_be_sent[index] = "mb";
-                        console.log(code_to_be_sent);
+                        for(var i=0; i<code_element_map.length; i++) {
+                            if(code_element_map[i]==index) {
+                                console.log(index);
+                                console.log(i);
+                                console.log(code_to_be_sent[i]);
+                                code_to_be_sent[i] = "mb";
+                                console.log(code_to_be_sent);
 
-                        var txt = document.getElementById("moveText"+index.toString());
-                        txt.textContent="backward";
+
+                                var trn = document.getElementById("moveText"+index.toString());
+                                trn.textContent="backward";
+                            }
+                        }
                     }
                 }
             }
@@ -118,26 +135,40 @@
                 items: {
                     foo: {name: "left ", callback: function(key, opt){ 
                         var index = parseInt(this[0].id);
-                        console.log(index);
-                        console.log(element_to_code[index]);
-                        code_to_be_sent[element_to_code[index]] = "tl";
-                        console.log(code_to_be_sent);
-                        
 
-                        var trn = document.getElementById("turnText"+index.toString());
-                        trn.textContent="left";
+                        for(var i=0; i<code_element_map.length; i++) {
+                            if(code_element_map[i]==index) {
+                                console.log(index);
+                                console.log(i);
+                                console.log(code_to_be_sent[i]);
+
+                                code_to_be_sent[i] = "tl";
+                                console.log(code_to_be_sent);
+
+
+                                var trn = document.getElementById("turnText"+index.toString());
+                                trn.textContent="left ";
+                            }
+                        }
                     }
                 },
                     bar: {name: "right", callback: function(key, opt){ 
                         var index = parseInt(this[0].id);
-                        console.log(index);
-                        console.log(element_to_code[index]);
-                        
-                        code_to_be_sent[element_to_code[index]] = "tr";
-                        console.log(code_to_be_sent);
 
-                        var trn = document.getElementById("turnText"+index.toString());
-                        trn.textContent="right";
+                        for(var i=0; i<code_element_map.length; i++) {
+                            if(code_element_map[i]==index) {
+                                console.log(index);
+                                console.log(i);
+                                console.log(code_to_be_sent[i]);
+
+                                code_to_be_sent[i] = "tr";
+                                console.log(code_to_be_sent);
+
+
+                                var trn = document.getElementById("turnText"+index.toString());
+                                trn.textContent="right";
+                            }
+                        }
                     }
                 }
             }
@@ -215,34 +246,37 @@
                         //console.log("condition met!");
 
                         var classReceived = self.element.getAttribute("class");
+                        var idx = parseInt(self.element.getAttribute("id").substr(5));
+                        console.log(idx);
+
 						if(classReceived.includes("moveBlock")) {
-                            
-                            element_to_code[elementIndex] = codeIndex;
-                            code_to_be_sent.push("mf"); 
+
+                            code_element_map[codeIndex] = idx;
+                            code_to_be_sent[codeIndex] = "mf";
                             codeIndex++;
-
-                            console.log(code_to_be_sent);
                             
 
-                            createMoveBlock(elementIndex.toString(), "moveText"+elementIndex.toString());
+                            createMoveBlock("block"+elementIndex.toString() , elementIndex.toString(), "moveText"+elementIndex.toString());
                             elementIndex++;
 
                             
                         }
                         else if(classReceived.includes("turnBlock")) {
                             
-                            element_to_code[elementIndex] = codeIndex;
-                            code_to_be_sent.push("tl"); 
+                            code_element_map[codeIndex] = idx;
+                            code_to_be_sent[codeIndex] = "tl";
                             codeIndex++;
 
-                            console.log(code_to_be_sent);
-                            
 
-                            createTurnBlock(elementIndex.toString(), "turnText"+elementIndex.toString());
+                            createTurnBlock("block"+elementIndex.toString() , elementIndex.toString(), "turnText"+elementIndex.toString());
                             elementIndex++;
 
                             
                         }
+
+                        console.log(codeIndex-1);
+                        console.log(code_element_map[codeIndex-1]);
+                        console.log(code_to_be_sent[codeIndex-1]);
 
                         var classname = document.getElementsByClassName("draggable");
 
