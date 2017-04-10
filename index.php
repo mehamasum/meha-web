@@ -19,7 +19,6 @@
             integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
             crossorigin="anonymous"></script>
     
-    <?php include "images.php"; ?>
 
 </head>
 <body>
@@ -45,6 +44,7 @@
         <button type="submit" class="btn btn-default navbar-btn">Upload</button>
         <?php
         if (isset($_FILES['imageToUpload'])) {
+            include "images.php";
             try {
                 $msg = Images::Upload();  // this will upload the image
                 echo "<p class='navbar-text navbar-right'>".$msg."</p>";  // Message showing success or failure.
@@ -60,6 +60,11 @@
 <div class="container-fluid">
     <div class="row">
         <?php
+        
+        if (!isset($_FILES['imageToUpload'])) {
+            include "images.php";
+        }
+        
         $images = Images::GetImages();
         foreach ($images as $image) {
             ?>
