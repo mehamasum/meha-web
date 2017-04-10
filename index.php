@@ -59,7 +59,7 @@
 <div class="container-fluid">
     <div class="row">
         <?php
-        include "images.php";
+        if (!isset($_FILES['imageToUpload']) include "images.php";
         $images = Images::GetImages();
         foreach ($images as $image) {
             ?>
